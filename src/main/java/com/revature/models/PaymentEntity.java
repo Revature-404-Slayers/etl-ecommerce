@@ -17,17 +17,21 @@ import java.util.Objects;
 public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="payment_txn_id")
+    @Column(name = "payment_txn_id")
     private Integer paymentTxnId;
 
-    @Column(name="failure_reason")
+    @Column(name = "failure_reason")
     private String failureReason;
 
-    @Column(name="payment_type")
+    @Column(name = "payment_type")
     private String paymentType;
 
-    @Column(name="payment_txn_success")
+    @Column(name = "payment_txn_success")
     private String paymentTxnSuccess;
+
+    @Column(name = "product_name")
+    private String productName;
+
 
     @Override
     public String toString() {
@@ -36,6 +40,7 @@ public class PaymentEntity {
                 ", failureReason='" + failureReason + '\'' +
                 ", paymentType='" + paymentType + '\'' +
                 ", paymentTxnSuccess='" + paymentTxnSuccess + '\'' +
+                ", productName='" + productName + '\'' +
                 '}';
     }
 
@@ -44,11 +49,17 @@ public class PaymentEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PaymentEntity that = (PaymentEntity) o;
-        return Objects.equals(paymentTxnId, that.paymentTxnId) && Objects.equals(failureReason, that.failureReason) && Objects.equals(paymentType, that.paymentType) && Objects.equals(paymentTxnSuccess, that.paymentTxnSuccess);
+        return Objects.equals(paymentTxnId, that.paymentTxnId) && Objects.equals(failureReason, that.failureReason) && Objects.equals(paymentType, that.paymentType) && Objects.equals(paymentTxnSuccess, that.paymentTxnSuccess) && Objects.equals(productName, that.productName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(paymentTxnId, failureReason, paymentType, paymentTxnSuccess);
+        return Objects.hash(paymentTxnId, failureReason, paymentType, paymentTxnSuccess, productName);
     }
 }
+
+
+
+
+
+
