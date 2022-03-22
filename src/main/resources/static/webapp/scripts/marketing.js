@@ -96,6 +96,10 @@ let catUrl="http://localhost:8080/ETL-E-Commerce/order/category"
                  console.log(response.length);
             }
             x++;
+            /*grab the value of the element in the drop down menu for the barchart check if it is for a specific country or all countrys also check
+            the other drop down menu to see if it is all countrys. Based on the results perform slightly different functions that differ only by parameter amount
+            */
+
             if(document.getElementById("3").value=='All Countrys'||document.getElementById("select x category").value=='country'){
               arr=populateBarChart(response,11,document.getElementById("select x category").value);
               getCountrysAndDrDown(response,'2','3')
@@ -106,6 +110,8 @@ let catUrl="http://localhost:8080/ETL-E-Commerce/order/category"
              arr=populateBarChart1(response,11,document.getElementById("select x category").value,document.getElementById("3").value);
              xlabel = changeLabels(arr[0],document.getElementById("select x category").value);
             }
+            /*create tha bar chart based on the data returned within the if else statement above 'arr' will have a structure like [['label','label1',...],[1,2,5,6,9,...]]
+            as an example */
                   let ctx = document.getElementById('Q3').getContext('2d');
                   let chartStatus = Chart.getChart('Q3');
                   if (chartStatus != undefined) {
@@ -141,7 +147,7 @@ let catUrl="http://localhost:8080/ETL-E-Commerce/order/category"
           xhr.send();
       
   } 
-  
+  // function for a specific country selected. the value is how many bars you would like on the chart
 function populateBarChart1(data,value,breakdown,country){
   labelArr=[]
   barHeightArr=[]
@@ -149,7 +155,7 @@ function populateBarChart1(data,value,breakdown,country){
   packagedArray=[]
     map=new Map();
    
- 
+ //keys are set by the field desired
     for(i=0; i<data.length;i++){
       if(data[i].country==country){
         map.set(data[i][breakdown],0)
@@ -159,6 +165,7 @@ function populateBarChart1(data,value,breakdown,country){
 
     }
     for(i=0; i<data.length;i++){
+  //values for keys are increased by occurence/transaction based on if the country matches the specified criteria
       if(data[i].country==country){
       
       map.set(data[i][breakdown],map.get(data[i][breakdown])+1)
@@ -166,7 +173,9 @@ function populateBarChart1(data,value,breakdown,country){
      
     }
   const iterator1 = map.entries();
-
+  /* map is broken down and repackaged for sorting purposes orginal structure is {key:value, key:val1,....} now after for loop below is
+    [[key,val],[key1,val1],..]
+  */ 
     for(const val of iterator1){
         arr1=[]
         arr1.push(val[0])
@@ -174,6 +183,9 @@ function populateBarChart1(data,value,breakdown,country){
         centralArray.push(arr1)
 
     }
+    /*the new array structure is then sorted below by the val in each sub array so if you had [[key,2][key1,1],...]
+    it will now be [[key1,1][key,2],...]*/
+
     newarr=centralArray.sort(function compare(a,b){
         if(a[1]>b[1]){
             return 1
@@ -184,11 +196,15 @@ function populateBarChart1(data,value,breakdown,country){
         }
 
     })
+    //the array is split and packaged int seprate array [1,2,3,...],[key,key1,...] and put into a final array to be returned
+    //final array 'packaged array' [[key,key1,...][1,2,3,....]]
     for(i=0;i<newarr.length;i++){
         labelArr.push(newarr[i][0])
         barHeightArr.push(newarr[i][1])
     }
-    
+    /* the product categorys are maxed out at 7 so weird things happen when you use the values to determine the bars for that category
+    below is where that is delt with
+    */
     if(breakdown!='productCategory'){
         packagedArray.push(labelArr.splice(labelArr.length-value-1,labelArr.length-1))
         packagedArray.push(barHeightArr.splice(barHeightArr.length-value-1,barHeightArr.length-1))
@@ -202,6 +218,7 @@ function populateBarChart1(data,value,breakdown,country){
       
     
 }
+//function for all countrys selected. Same work flow as the above function but no country criteria being filtered by
 function populateBarChart(data,value,breakdown){
   
   labelArr=[]
@@ -263,13 +280,18 @@ function populateBarChart(data,value,breakdown){
       
     
 }
+/*country drop down is created if it doesnt exist for the barchart
+if it does exist the div is cleared and it is recreated*/
 function getCountrysAndDrDown(data,divId,setAttribId){
+//maping the keys as each country
   map=new Map();
   for(i=0; i<data.length;i++){
     if(map.get(data[i].country)==undefined){
     map.set(data[i].country,0)}
 
 }
+//creating a select element with options as countrys and id attribute as a integer or whatever desired
+//onchange attribute added so chart updates whenever the the value of the select is changed
 div=document.getElementById(divId)
 div.innerHTML=""
 select=document.createElement('select')
@@ -281,7 +303,7 @@ option1.setAttribute('value','All Countrys')
  select.append(option1)
 
 for(let key of map.keys()){
-
+//options created plus appended to select based on map keys and values of the options created
  option=document.createElement('option')
  option.innerHTML=key
  option.setAttribute('value',key)
@@ -289,11 +311,12 @@ for(let key of map.keys()){
   
 
 }
+//select is appended to div.
 div.append(select);
 
 }
 
-
+//function to change numeric labels from timeOfDay and months to better formated labels
 function changeLabels(xData,value){
   xlabels =[]
   if(value == "qty" || value == "country" || value == "city" || value == "productCategory")
@@ -366,6 +389,8 @@ function changeLabels(xData,value){
   return xlabels;
 
 }
+/*same function as before where a select is created with country options but the 
+div is not initially cleared so you can keep createing them*/
 function getCountrysNoCleared(data,divId,setAttribId){
   map=new Map();
   for(i=0; i<data.length;i++){
@@ -391,7 +416,7 @@ for(let key of map.keys()){
 div.append(select);
 
 }
-
+/*similar to the bar chart except when the values are sorted they are sorted by the keys ('timeOfDay' or 'months')*/
 function populateLineChart(data,breakdown,country){
   
   labelArr=[]
@@ -416,10 +441,12 @@ function populateLineChart(data,breakdown,country){
     }
      
     }
+    //the one array different from the last function now can be either 0-23 for all hours or 1-12 for months no need to use the keys as labels
     if(breakdown=="timeOfDay"){
       for(i=0;i<24;i++){
           labelArr.push(i);
       }
+      //increase the value array corresponding to the selected field 'timeOfDay'
       for(t=0;t<labelArr.length;t++){
         if(map.get(labelArr[t])==undefined){
           barHeightArr.push(0)
@@ -432,6 +459,7 @@ function populateLineChart(data,breakdown,country){
     for(i=1;i<13;i++){
         labelArr.push(i);
     }
+     //increase the value array corresponding to the selected field 'months'
     for(t=0;t<labelArr.length;t++){
       if(map.get(labelArr[t])==undefined){
         barHeightArr.push(0)
@@ -442,7 +470,7 @@ function populateLineChart(data,breakdown,country){
 
     }
   
-    
+   //arrays are packaged together like before 
     
 
 packagedArray.push(labelArr) 
@@ -451,7 +479,8 @@ packagedArray.push(barHeightArr)
 return packagedArray
 }
     
-
+//when the addition buttun is clicked a global variable will be increased and put into an array 'indForLineArr'
+//below objects are created for the datasets for the line chart based on the data returned from populate line chart and how many values are in the array
 function createObjects(){
   
   labels1=[]
@@ -461,23 +490,27 @@ function createObjects(){
     let obj1={
       label: document.getElementById(`${indForLineArr[k]}`).value,
       fill: false,
+      //colors randomized for each line
       borderColor: `rgba(${getRandInt(0, 225)}, ${getRandInt(0, 225)},${getRandInt(0, 225)},${getRandInt(0, 225)} )`,
       data: populateLineChart(globalResponse,document.getElementById("select x category1").value,
       document.getElementById(`${indForLineArr[k]}`).value)[1]
       
     }
-    
+    //obj pushed to dataset1 for every obj
     datasets1.push(obj1);
   }
 
   //time of day charts
+  //labels created for x axis should be the same for every object so just selecting the first object and the labels of that object(array)
   labels1=populateLineChart(globalResponse,document.getElementById("select x category1").value,
   document.getElementById(`${indForLineArr[0]}`).value)[0]
+  //labels changed to look nicer for timeOfday and months
   LineChrtLabels = changeLabels(labels1,document.getElementById("select x category1").value)
   data2={
     labels:LineChrtLabels,//switch for new labels
     datasets:datasets1
   }
+  //below just used for testing line chart format
   data={
     labels:[3,1,2],
     datasets:[{data:[1,3,4]}]
@@ -486,7 +519,7 @@ function createObjects(){
 return data2
 
 }
-
+//when the addition button is pressed create a new select and repopulate the chart also increase indForLineChart
 function additionButtonPressed(){
   getCountrysNoCleared(globalResponse,"lineId",indForLineChart);
   indForLineArr.push(indForLineChart)
@@ -494,7 +527,7 @@ function additionButtonPressed(){
   createLineChart()
   
 }
-
+//when the sub button is pressed delete the last select and repopulate the chart also decrease indForLineChart
 function subtractionButtonPressed(){
   document.getElementById(`${indForLineChart-1}`).remove()
   indForLineArr.pop(indForLineChart)
@@ -503,6 +536,7 @@ function subtractionButtonPressed(){
   
   
 }
+//the peak of creating the chart lives here every function needed is invoked in order to create the chart here
 function createLineChart(){
   let ctx = document.getElementById("lineChart").getContext('2d');
   let chartStatus = Chart.getChart("lineChart");
@@ -524,6 +558,7 @@ function createLineChart(){
     }
   }});
 }
+//function used for random colors in line chart
 function getRandInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
