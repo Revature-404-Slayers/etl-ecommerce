@@ -34,6 +34,8 @@
 //document.getElementById("getByCountry").addEventListener("click", getByCountry)
 //document.getElementById("SalesByCountry").addEventListener("click", getSalesByCountry);
 
+const dollarUSLocale = Intl.NumberFormat('en-US');
+
 // -------------------------------
 // Get All Facts
 // -------------------------------
@@ -127,18 +129,18 @@ function getByCountry(){
         
         row.appendChild(paymentType);
         let revenue = document.createElement("td");
-        revenue.innerHTML = round(mainMap.get(key).get("Revenue"));
+        revenue.innerHTML = "$" + dollarUSLocale.format(round(mainMap.get(key).get("Revenue")));
        
         row.appendChild(revenue);
 
         let realRevenue = document.createElement("td");
-        realRevenue.innerHTML = round(mainMap.get(key).get("RealRev"));
+        realRevenue.innerHTML = "$" + dollarUSLocale.format(round(mainMap.get(key).get("RealRev")));
        
         row.appendChild(realRevenue);
 
         
         let txnSuccess = document.createElement("td");
-        txnSuccess.innerHTML = round(((mainMap.get(key).get("TransSuc")/(mainMap.get(key).get("TransSuc")+mainMap.get(key).get("TransFail")))*100));
+        txnSuccess.innerHTML = round(((mainMap.get(key).get("TransSuc")/(mainMap.get(key).get("TransSuc")+mainMap.get(key).get("TransFail")))*100 ))+ "%";
         
         row.appendChild(txnSuccess);
     
