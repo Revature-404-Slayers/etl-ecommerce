@@ -16,11 +16,11 @@ function overallSpent(){
        if (xhr.readyState == 4 && xhr.status == 200){
             let response = JSON.parse(xhr.responseText);
 
-            let dirtyVsClean = (response.length/2000) * 100;
-            document.getElementById("averageProducts").innerHTML = `<b>Average Products Purchased Per Transaction: </b>${dirtyVsClean}% Clean Data`; 
-                console.log(response.length);
+//            let dirtyVsClean = (response.length/2000) * 100;
+//            document.getElementById("averageProducts").innerHTML = `<b>Average Products Purchased Per Transaction: </b>${dirtyVsClean}% Clean Data`;
+//                console.log(response.length);
                 let cleanVsDirty = (response.length/2000) * 100;
-            document.getElementById("averageAmount").innerHTML = `<b>Average Amount Spent Per Transaction: </b>${cleanVsDirty}% Clean Data`; 
+            document.getElementById("averageAmount").innerHTML = `<b>Sales Averages: </b>${cleanVsDirty}% Clean Data`;
                 console.log(response.length);
 
 
@@ -36,8 +36,14 @@ function overallSpent(){
             }
             let averageSales = (totalSales/transCount).toFixed(2);
             let averageQty = (totalQty/transCount).toFixed(0);
+<<<<<<< HEAD
+            console.log(averageQty);
+            document.getElementById("Q2").innerHTML = `<b>Average Spent Per Transaction:</b> ${averageSales}<br></br> <b>Average Quantity Bought Per Transaction:</b> ${averageQty}`;
+//            document.getElementById("Q2").innerHTML = `<b>Average Quantity:</b> ${averageQty}`;
+=======
             document.getElementById("Q2").innerHTML = `<b>Average Sales:</b> ${averageSales}`;
             document.getElementById("Q1").innerHTML = `<b>Average Quantity:</b> ${averageQty}`;
+>>>>>>> e35137bc22a9b18d515293ce84fb7f9c0e772bc6
        }
 
    }
