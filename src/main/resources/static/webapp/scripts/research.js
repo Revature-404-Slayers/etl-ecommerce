@@ -7,6 +7,8 @@
 // Table
 // How much does each customer spend on average Per Country?
 // Extra question: What is the average quantity of items purchased per transaction? per country?
+const dollarUSLocale = Intl.NumberFormat('en-US');
+
 $(document).ready(function () {
     getAllResearch();
 });
@@ -37,7 +39,7 @@ function overallSpent(){
             let averageSales = (totalSales/transCount).toFixed(2);
             let averageQty = (totalQty/transCount).toFixed(0);
             console.log(averageQty);
-            document.getElementById("Q2").innerHTML = `<b>Average Spent Per Transaction:</b> ${averageSales}<br></br> <b>Average Quantity Bought Per Transaction:</b> ${averageQty}`;
+            document.getElementById("Q2").innerHTML = `<b>Average Spent Per Transaction:</b> $${dollarUSLocale.format(averageSales)}<br></br> <b>Average Quantity Bought Per Transaction:</b> ${averageQty}`;
 //            document.getElementById("Q2").innerHTML = `<b>Average Quantity:</b> ${averageQty}`;
 
 
@@ -126,7 +128,7 @@ function getAllResearch(){
                 row.appendChild(country);
 
                 let sale = document.createElement("td");
-                sale.innerHTML = (totalSales[i] == 0) ? "0" : ((totalSales[i]/totalSuxTrans[i]).toFixed(2));//((totalSales[i]/totalSuxTrans[i]).toFixed(2));
+                sale.innerHTML = (totalSales[i] == 0) ? "0" : "$" + dollarUSLocale.format(((totalSales[i]/totalSuxTrans[i]).toFixed(2)));//((totalSales[i]/totalSuxTrans[i]).toFixed(2));
                 row.appendChild(sale);
 
                 let qty = document.createElement("td");
