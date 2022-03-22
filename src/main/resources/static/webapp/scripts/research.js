@@ -36,14 +36,11 @@ function overallSpent(){
             }
             let averageSales = (totalSales/transCount).toFixed(2);
             let averageQty = (totalQty/transCount).toFixed(0);
-<<<<<<< HEAD
             console.log(averageQty);
             document.getElementById("Q2").innerHTML = `<b>Average Spent Per Transaction:</b> ${averageSales}<br></br> <b>Average Quantity Bought Per Transaction:</b> ${averageQty}`;
 //            document.getElementById("Q2").innerHTML = `<b>Average Quantity:</b> ${averageQty}`;
-=======
-            document.getElementById("Q2").innerHTML = `<b>Average Sales:</b> ${averageSales}`;
-            document.getElementById("Q1").innerHTML = `<b>Average Quantity:</b> ${averageQty}`;
->>>>>>> e35137bc22a9b18d515293ce84fb7f9c0e772bc6
+
+
        }
 
    }
