@@ -205,8 +205,8 @@ function populateBarChart1(data,value,breakdown,country){
     below is where that is delt with
     */
     if(breakdown!='productCategory'){
-        packagedArray.push(labelArr.splice(labelArr.length-value-1,labelArr.length-1))
-        packagedArray.push(barHeightArr.splice(barHeightArr.length-value-1,barHeightArr.length-1))
+        packagedArray.push(labelArr.splice(labelArr.length-value-1,labelArr.length))
+        packagedArray.push(barHeightArr.splice(barHeightArr.length-value-1,barHeightArr.length))
     }else{
         packagedArray.push(labelArr)
         packagedArray.push(barHeightArr)
@@ -336,6 +336,9 @@ function changeLabels(xData,value){
       }
       if (xData[i] < 12 && xData[i] > 0) {
         xlabels.push(xData[i]+' AM')
+      }
+      if(xData[i]==12){
+        xlabels.push(xData[i]+' PM')
       }
 
     }
@@ -471,10 +474,11 @@ function populateLineChart(data,breakdown,country){
   
    //arrays are packaged together like before 
     
+console.log(map);
 
 packagedArray.push(labelArr) 
 packagedArray.push(barHeightArr)
-
+console.log(packagedArray);
 return packagedArray
 }
     
