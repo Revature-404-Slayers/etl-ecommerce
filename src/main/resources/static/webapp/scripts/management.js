@@ -313,13 +313,15 @@ function paymentType1(data){
 
 function createTable(data){
     map=new Map();
-    innerMap0=new Map();
-    innerMap1=new Map();
-    innerMap2=new Map();
+    //inner maps are never used they were used before when we had a snowflake designed schema and querying from an inner fact table
+    //innerMap0=new Map();
+    //innerMap1=new Map();
+    //innerMap2=new Map();
     startVal=0;
     topPymntType=''
     topProductType=''
     for(i=0; i<data.length;i++){
+        //maps are dynamically created based on the values of the fields returned for our objects and how they are needed to be structured
         if(map.get(data[i].country)==undefined){
         map.set(data[i].country,new Map())}
         map.get(data[i].country).set('Revenue',0)
@@ -335,7 +337,7 @@ function createTable(data){
         
         
     }
-   
+   //everything is aggregated based on country
     for(i=0; i<data.length;i++){
         
        
@@ -363,7 +365,7 @@ function createTable(data){
         
         
     }
-   
+ //get the topPaymentType per country  
 for(i=0;i<data.length;i++){
     for(let key of map.get(data[i].country).get('PaymentType').keys()){
         if(map.get(data[i].country).get('PaymentType').get(key)>startVal){
@@ -373,6 +375,7 @@ for(i=0;i<data.length;i++){
 
 
     }
+//set the 'TopPaymentType value to be the top payment type per country
     map.get(data[i].country).set('TopPaymentType',topPaymntType)
     topPaymentType=''
     startVal=0
@@ -387,7 +390,7 @@ return map;
 
 }
 
-
+//used to round our values to 2 decimal places(should have just used bigDecimals to begin with)
 function round(num) {
     var m = Number((Math.abs(num) * 100).toPrecision(15));
     return Math.round(m) / 100 * Math.sign(num);
