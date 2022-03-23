@@ -80,6 +80,8 @@ let catUrl="http://localhost:8080/ETL-E-Commerce/order/category"
       xhr.onreadystatechange = function () {
           if (xhr.readyState == 4 && xhr.status == 200) {
               let response = JSON.parse(xhr.responseText);
+              
+              
               let dirtyVsClean = (response.length/2000) * 100;
               document.getElementById("barChartHeader").innerHTML = `<b>Transactions per Month/Time,per Country
               : </b>${dirtyVsClean}% Clean Data`;
@@ -90,6 +92,7 @@ let catUrl="http://localhost:8080/ETL-E-Commerce/order/category"
               : </b>${cleanVsDirty}% Clean Data`;
                   console.log(response.length);
              globalResponse=response
+             getByCountry();
              if(x<1){
              getCountrysAndDrDown(response,'2','3')
 
@@ -566,3 +569,135 @@ function getRandInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min)}
+  
+  
+function createTable(data){
+    map=new Map();
+    //inner maps are never used they were used before when we had a snowflake designed schema and querying from an inner fact table
+    //innerMap0=new Map();
+    //innerMap1=new Map();
+    //innerMap2=new Map();
+    startVal=0;
+    topProductType=''
+    for(i=0; i<data.length;i++){
+        //maps are dynamically created based on the values of the fields returned for our objects and how they are needed to be structured
+        if(map.get(data[i].country)==undefined){
+        map.set(data[i].country,new Map())}
+       
+
+        if(map.get(data[i].country).get(data[i]['months'])==undefined){
+            map.get(data[i].country).set(data[i]['months'],new Map())}
+        if(map.get(data[i].country).get(data[i]['months']).get(data[i]['productCategory'])==undefined){
+          map.get(data[i].country).get(data[i]['months']).set(data[i]['productCategory'],0) 
+        }
+           
+        
+        
+        
+    }
+    console.log(map)
+   //everything is aggregated based on country
+    for(i=0; i<data.length;i++){
+      map.get(data[i].country).get(data[i]['months']).set(data[i]['productCategory'],
+      map.get(data[i].country).get(data[i]['months']).get(data[i]['productCategory'])+1
+      )
+      
+        
+        
+    }
+    
+ //get the topPaymentType per country  
+for(i=0;i<data.length;i++){
+    for(let key of map.get(data[i].country).get(data[i]['months']).keys()){
+        if(map.get(data[i].country).get(data[i]['months']).get(key)>startVal){
+            topProductType=key
+            startVal=map.get(data[i].country).get(data[i]['months']).get(key)
+        }
+
+
+    }
+//set the 'TopPaymentType value to be the top payment type per country
+    map.get(data[i].country).get(data[i]['months']).set('TopProduct',topProductType)
+    topPaymentType=''
+    startVal=0
+
+
+
+}
+console.log(map)
+
+
+return map;
+    }
+
+    function getByCountry(){
+      mainMap=createTable(globalResponse);
+  //     aggregate payment type
+  //     aggregate quantity (total Sales)
+  //     aggregate Revenue
+      let x = document.getElementById("mgmtStatsTable");
+      x.remove();
+  
+      let table = document.createElement("table");
+      table.setAttribute("id", "mgmtStatsTable");
+      table.setAttribute("class", "table table-striped table-bordered table-sort sortable");
+      let thead = document.createElement("thead");
+      thead.setAttribute("id", "thead");
+      let tbody = document.createElement("tbody");
+      tbody.setAttribute("id", "tbody");
+      table.appendChild(thead);
+      table.appendChild(tbody);
+      document.getElementById("mgmtDiv").appendChild(table);
+  
+      // Create table header array
+      let header = [
+          "Country",
+          "Month",
+          "Top Product"]
+  
+      // Create table header row
+      let headerRow = document.createElement("tr");
+      header.forEach(function (header) {
+          let th = document.createElement("th");
+          th.setAttribute("style", "cursor: pointer");
+          th.innerHTML = header;
+          headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+  
+  
+   
+      // Create table arrays with no duplicate countries
+    
+  
+      
+      // Create table body
+      for (let key of mainMap.keys()) {
+        for(let key1 of mainMap.get(key).keys()){
+          
+          let row = document.createElement("tr");
+          let country = document.createElement("td");
+          country.innerHTML = key;
+          
+          row.appendChild(country);
+          let month = document.createElement("td");
+          month.innerHTML = key1;
+          
+          row.appendChild(month);
+          let topProductType = document.createElement("td");
+          topProductType.innerHTML = mainMap.get(key).get(key1).get('TopProduct');
+         
+          row.appendChild(topProductType)
+      
+  //        table.append(row);
+  tbody.appendChild(row);
+        }
+  
+     
+      
+  
+  
+  }
+    
+  }
+  
