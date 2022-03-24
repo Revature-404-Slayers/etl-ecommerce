@@ -1,3 +1,5 @@
+
+
 //Marketing Questions
 // CHARTS
 // What is the top selling category of items?
@@ -77,6 +79,7 @@ let catUrl="http://localhost:8080/ETL-E-Commerce/order/category"
         select=document.getElementById('q3Div')
       
       let xhr = new XMLHttpRequest();
+      xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhr.onreadystatechange = function () {
           if (xhr.readyState == 4 && xhr.status == 200) {
               let response = JSON.parse(xhr.responseText);
